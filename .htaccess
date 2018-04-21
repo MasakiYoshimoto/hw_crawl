@@ -1,0 +1,5 @@
+AuthUserFile /home/users/2/main.jp-72553e06e3e2a92c/web/hw/.htpasswd
+AuthGroupFile /dev/null
+AuthName "hw-crawling"
+AuthType Basic
+require valid-user
