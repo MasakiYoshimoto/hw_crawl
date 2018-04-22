@@ -2,8 +2,16 @@
 $_BASE_URL = "https://www.hellowork.go.jp/servicef/";
 $_SEARCH_URL = "130050.do";
 $_REF_URL = "https://www.hellowork.go.jp/servicef/130020.do?action=initDisp&screenId=130020";
+//就業場所配列
 $_CODE_PREF = array(
-  array("id" => "13", "name" => "東京都")
+  array("id" => "13", "name" => "東京"),
+  array("id" => "11", "name" => "埼玉"),
+  array("id" => "12", "name" => "千葉"),
+  array("id" => "14", "name" => "神奈川"),
+  array("id" => "27", "name" => "大阪"),
+  array("id" => "26", "name" => "京都"),
+  array("id" => "28", "name" => "兵庫"),
+  array("id" => "29", "name" => "奈良"),
 );
 $_CODE_HW_EMPTYPE = array(
   array("id"=>"1", "name" => "一般（フルタイム）"),
