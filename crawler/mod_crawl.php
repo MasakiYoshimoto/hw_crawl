@@ -1,4 +1,5 @@
 <?php
+require_once(__DIR__ . "/common.php");
 $_BASE_URL = "https://www.hellowork.go.jp/servicef/";
 $_SEARCH_URL = "130050.do";
 $_REF_URL = "https://www.hellowork.go.jp/servicef/130020.do?action=initDisp&screenId=130020";
@@ -102,6 +103,45 @@ function getHtml($url, $data, $ref){
   curl_close($curl);
 
   return $html;
+}
+
+/**
+ * 対象都道府県取得
+ * @return Array 都道府県情報
+ */
+function getTargetPref(){
+  $target_pref = array();
+
+  // データベースと接続
+  $con = connect_db();
+
+  $sql = "SELECT `pref_code`,`pref` FROM mst_target_pref WHERE target_flg=1";
+
+  $result = $con->query($sql);
+  while($row = $result->fetch_assoc()){
+    $target_pref[] = $row;
+  }
+  return $target_pref;
+}
+
+/**
+ * 対象職種取得
+ * @return Array 都道府県情報
+ */
+function getTargetWork(){
+  $target_work = array();
+
+  // データベースと接続
+  $con = connect_db();
+
+  $sql = "SELECT `work_code`,`work` FROM mst_target_work WHERE target_flg=1";
+
+  $result = $con->query($sql);
+  while($row = $result->fetch_assoc()){
+    $target_work[] = $row;
+  }
+  var_dump($target_work);exit();
+  return $target_work;
 }
 
 ?>
