@@ -30,9 +30,6 @@ $con = pg_connect("dbname=crie-re-co-jp01 user=crie-re-co-jp01 password=t9LnpcX3
   foreach ($_CODE_HW_EMPTYPE as $emptype) { // 職種ループ
     $search_data["kyujinShuruiHidden"] = $emptype["id"];
     foreach ($_CODE_OCCUPATION as $occupation) { // 業種ループ
-      // echo "職種 : ".$emptype["id"]."<br>";
-      // echo "業種 : ".$occupation["id"]."<br>";
-// $cnt++;
       $search_data["kiboShokushu1Hidden"] = $occupation["id"];
       $search_data["kiboShokushu1"] = $occupation["id"];
 
