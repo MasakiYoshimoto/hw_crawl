@@ -58,6 +58,9 @@ $_SERCH_DATA = array(
   "xab_vrbs" => "commonNextScreen,detailJokenChangeButton,commonDetailInfo,commonSearch,commonDelete"
 );
 
+/**
+ * サイトクッキー取得
+ */
 function getCookie(){
   global $_REF_URL;
   //クッキー取得のためのアクセス
@@ -69,9 +72,15 @@ function getCookie(){
   curl_setopt($curl,CURLOPT_FOLLOWLOCATION,true);//Locationヘッダの内容をたどっていく
   curl_exec($curl);
   curl_close($curl);//いったん終了
-  return;
 }
 
+/**
+ * HTML情報取得
+ * @param  String $url  取得ページURL
+ * @param  Array  $data POSTデータ
+ * @param  String $ref  遷移元ページ
+ * @return Object $html 取得ページ
+ */
 function getHtml($url, $data, $ref){
   ini_set('safe_mode', false);
 
