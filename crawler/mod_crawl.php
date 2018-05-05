@@ -64,20 +64,17 @@ $_SERCH_DATA = array(
   "codeAssistRankLimit" => "",
   "xab_vrbs" => "commonNextScreen,detailJokenChangeButton,commonDetailInfo,commonSearch,commonDelete"
 );
-
 $cate_pref = array(
   '11' => 'A','12' => 'A',
   '13' => 'A','14' => 'A',
   '26' => 'B','27' => 'B',
   '28' => 'B','29' => 'B'
 );
-
 $cate_work = array(
   '09' => 'B','70' => 'J1',
   '71' => 'J2','72' => 'J3',
   '73' => 'J4'
 );
-
 $count_code_percent = array(
   "A-B" => 0.40,
   "A-J1" => 0.03,
@@ -198,7 +195,11 @@ function getField($value){
   return $field;
 }
 
-
+/**
+ * 既存データ存在確認用関数
+ * @param  Array   $ads_info 求人情報(１件)
+ * @return Boolean literal   結果
+ */
 function chkExistData($ads_info){
   if(empty($ads_info['code']['value'])) return false;
   $con = connect_db();//Db接続
@@ -213,6 +214,10 @@ function chkExistData($ads_info){
   }
 }
 
+/**
+ * レコード追加用関数
+ * @param  Array   $ads_info 求人情報(１件)
+ */
 function insAdsRecode($ads_info){
   $con = connect_db();//Db接続
   $sql_strings = makeSqlStringsByArray($ads_info, "insert");
@@ -220,6 +225,12 @@ function insAdsRecode($ads_info){
   $con->query($sql);
 }
 
+/**
+ * SQLテキスト作成
+ * @param  Array  $array       求人情報(１件)
+ * @param  String $sql_type    SQL種別
+ * @return String $sql_strings SQLテキスト
+ */
 function makeSqlStringsByArray($array, $sql_type){
   $sql_strings = array("fields" => "", "values" => "");
 
@@ -236,6 +247,11 @@ function makeSqlStringsByArray($array, $sql_type){
   return $sql_strings;
 }
 
+/**
+ * カテゴリごとの取得最大件数指定
+ * @param  Integer $max_count    全体最大件数
+ * @return Array   $loop_cnt_arr カテゴリごとの取得数配列
+ */
 function getLoopCount($max_count){
   global $count_code_percent;
   foreach ($count_code_percent as $key => $value) {
