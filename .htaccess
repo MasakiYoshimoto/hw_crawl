@@ -3,3 +3,5 @@ AuthGroupFile /dev/null
 AuthName "hw-crawling"
 AuthType Basic
 require valid-user
+
+AddHandler php7.1-script .htm .html

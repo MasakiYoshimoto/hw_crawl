@@ -1,0 +1,22 @@
+<div id="pagenation">
+    <ul>
+        <?php
+        //2ページ移行だったら「一番前へ」を表示
+        if ( $current_page > 2) echo '<li class="prev"><a href="'. $pager_data["path"] .'1">&laquo;</a></li>';
+        //最初のページ以外だったら「前へ」を表示
+        if ( $current_page > 1) echo '<li class="prev"><a href="'. $pager_data["path"] . ($current_page-1).'">&lsaquo;</a></li>';
+        for ($i=$pager_data["loop_start"]; $i<=$pager_data["loop_end"]; $i++) {
+            if ($i > 0 && $pager_data["total_page"] >= $i) {
+                if($i == $current_page) echo '<li class="active">';
+                else echo '<li>';
+                echo '<a href="'. $pager_data["path"] . $i.'">'.$i.'</a>';
+                echo '</li>';
+            }
+        }
+        //最後のページ以外だったら「次へ」を表示
+        if ( $current_page < $pager_data["total_page"]) echo '<li class="next"><a href="'. $pager_data["path"] . ($current_page+1).'">&rsaquo;</a></li>';
+        //最後から２ページ前だったら「一番最後へ」を表示
+        if ( $current_page < $pager_data["total_page"] - 1) echo '<li class="next"><a href="'. $pager_data["path"] . $pager_data["total_page"].'">&raquo;</a></li>';
+        ?>
+    </ul>
+</div>

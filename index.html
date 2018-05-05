@@ -1,36 +1,62 @@
 <?php
 require_once(__DIR__ . "/lib/common.php");
+require_once(__DIR__ . "/lib/pager.php");
+$db = connect_db();
+
+$current_page = (!empty($_GET["page"]))? $_GET["page"] : 0;
+
+// 全体件数取得
+$sql = "SELECT count(id) as all_cnt FROM job_ads";
+$res = $db->query($sql);
+$all_cnt_res = $res->fetch_assoc();
+$all_cnt = $all_cnt_res["all_cnt"];
+
+//ページャー情報生成
+$pager_data = pager($current_page, $all_cnt);
+
+//TODO データ取得
+$sql = "SELECT count(id) as all_cnt FROM job_ads";
+
 ?>
 <!DOCTYPE html>
 <html lang="ja">
   <head>
     <meta charset="utf-8">
     <title></title>
+    <link rel="stylesheet" type="text/css" href="css/pager.css">
+    <link rel="stylesheet" type="text/css" href="css/adsList.css">
   </head>
   <body>
-    <article class="">
+    <article>
       <header>
         <h1>HWクローリングシステム</h1>
       </header>
       <div class="main-contents">
         <div class="">
-          総取得件数：<?=?>件
+          総取得件数：<?=$all_cnt?>件
         </div>
-        <table>
+        <table class="adsTable">
           <thead>
             <tr>
-              <th></th>
+              <th>No.</th><th>日付</th><th>取得件数</th><th>ダウンロード</th><th>取得済/未</th><th>削除</th>
             </tr>
           </thead>
           <tbody>
-            <tr>
-              <td></td>
-            </tr>
+            <?php foreach ($pager_data as $key => $value) { ?>
+              <tr>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+                <td></td>
+              </tr>
+            <?php } ?>
           </tbody>
         </table>
       </div>
       <footer>
-
+        <?php include_once(__DIR__ . "/parts/pager.html"); ?>
       </footer>
     </article>
   </body>
