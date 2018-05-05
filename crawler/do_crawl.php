@@ -3,7 +3,7 @@
 require_once(__DIR__ . "/mod_crawl.php");
 require_once(__DIR__ . "/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
-set_time_limit(3600);
+set_time_limit(0);
 getCookie(); // サイト内のCOOKIEを取得
 $max_count = 10000; // 取得最大件数
 $search_data = $_SERCH_DATA;
