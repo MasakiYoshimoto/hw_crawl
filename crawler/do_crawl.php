@@ -49,29 +49,54 @@ foreach ($pref_list as $pref) {
 
       //詳細ページ内の項目ごとにデータを抽出
       $item_arr = array();
-      $is_table0 = getField($detail_doc["table:eq(0) tr"][0]);
-      $is_table1 = getField($detail_doc["table:eq(1) tr"][0]);
+      $is_table0 = $detail_doc["table:eq(0) tr"][0];
+      $is_table1 = $detail_doc["table:eq(1) tr"][0];
 
       if(!empty($is_table0)){
-        foreach ($detail_doc["table:eq(0) tr"] as $key => $detail_tr) {
-          $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
-          $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
-
-          if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
-            $item_arr[$key]["name"]="賃金形態";
+        $arr_cnt = 0;
+        foreach ($detail_doc["table:eq(0) tr"] as $detail_tr) {
+          $base_field = pq($detail_tr)->find("th:eq(0)")->text();
+          if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
+          $field = getField($base_field);
+          if(!empty($field)){
+            $item_arr[$arr_cnt]["field"] = $field;
+            $item_arr[$arr_cnt]["name"] = $base_field;
+            $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+            $arr_cnt++;
+            if(strpos($base_field, "職種")!==false){
+              $item_arr[$arr_cnt]["field"] = "occupation";
+              $item_arr[$arr_cnt]["name"] = $base_field;
+              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $arr_cnt++;
+            }
           }
         }
       } elseif(!empty($is_table1)){
-        foreach ($detail_doc["table:eq(1) tr"] as $key => $detail_tr) {
-          $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
-          $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
-
-          if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
-            $item_arr[$key]["name"]="賃金形態";
+        $arr_cnt = 0;
+        foreach ($detail_doc["table:eq(1) tr"] as $detail_tr) {
+          $base_field = pq($detail_tr)->find("th:eq(0)")->text();
+          if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
+          $field = getField($base_field);
+          if(!empty($field)){
+            $item_arr[$arr_cnt]["field"] = $field;
+            $item_arr[$arr_cnt]["name"] = $base_field;
+            $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+            $arr_cnt++;
+            if(strpos($base_field, "職種")!==false){
+              $item_arr[$arr_cnt]["field"] = "occupation";
+              $item_arr[$arr_cnt]["name"] = $base_field;
+              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $arr_cnt++;
+            }
           }
         }
       }
+
+      echo "<br>";
+      var_dump($item_arr);
+      echo "<br>";
     }
+    exit();
     // 1ページ目 //////////////////////////////////////////
     // 2ページ目以降 //////////////////////////////////////
     for ($i=2; $i <= $all_page_cnt; $i++) {
@@ -88,25 +113,45 @@ foreach ($pref_list as $pref) {
         $detail_doc = phpQuery::newDocument($detail_html);
 
         $item_arr = array();
-        $is_table0 = getField($detail_doc["table:eq(0) tr"][0]);
-        $is_table1 = getField($detail_doc["table:eq(1) tr"][0]);
+        $is_table0 = $detail_doc["table:eq(0) tr"][0];
+        $is_table1 = $detail_doc["table:eq(1) tr"][0];
 
         if(!empty($is_table0)){
-          foreach ($detail_doc["table:eq(0) tr"] as $key => $detail_tr) {
-            $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
-            $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
-
-            if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
-              $item_arr[$key]["name"]="賃金形態";
+          $arr_cnt = 0;
+          foreach ($detail_doc["table:eq(0) tr"] as $detail_tr) {
+            $base_field = pq($detail_tr)->find("th:eq(0)")->text();
+            if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
+            $field = getField($base_field);
+            if(!empty($field)){
+              $item_arr[$arr_cnt]["field"] = $field;
+              $item_arr[$arr_cnt]["name"] = $base_field;
+              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $arr_cnt++;
+              if(strpos($base_field, "職種")!==false){
+                $item_arr[$arr_cnt]["field"] = "occupation";
+                $item_arr[$arr_cnt]["name"] = $base_field;
+                $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+                $arr_cnt++;
+              }
             }
           }
         } elseif(!empty($is_table1)){
-          foreach ($detail_doc["table:eq(1) tr"] as $key => $detail_tr) {
-            $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
-            $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
-
-            if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
-              $item_arr[$key]["name"]="賃金形態";
+          $arr_cnt = 0;
+          foreach ($detail_doc["table:eq(1) tr"] as $detail_tr) {
+            $base_field = pq($detail_tr)->find("th:eq(0)")->text();
+            if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
+            $field = getField($base_field);
+            if(!empty($field)){
+              $item_arr[$arr_cnt]["field"] = $field;
+              $item_arr[$arr_cnt]["name"] = $base_field;
+              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $arr_cnt++;
+              if(strpos($base_field, "職種")!==false){
+                $item_arr[$arr_cnt]["field"] = "occupation";
+                $item_arr[$arr_cnt]["name"] = $base_field;
+                $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+                $arr_cnt++;
+              }
             }
           }
         }
