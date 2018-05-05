@@ -38,7 +38,7 @@ foreach ($pref_list as $pref) {
     $all_cnt = explode(" ",$all_cnt_str);
     $all_page_cnt = ceil($all_cnt[1]/20);
 
-    // 1ページ目
+    // 1ページ目 //////////////////////////////////////////
     foreach ($doc[".sole-small #ID_link"] as $value) {
       $data = array();
       $detail_uri = pq($value)->attr("href");
@@ -72,8 +72,8 @@ foreach ($pref_list as $pref) {
         }
       }
     }
-
-    // 2ページ目以降
+    // 1ページ目 //////////////////////////////////////////
+    // 2ページ目以降 //////////////////////////////////////
     for ($i=2; $i <= $all_page_cnt; $i++) {
       $search_data["nowPageNumberHidden"] = $i;
       $html = getHtml($url, $search_data, $_REF_URL);
@@ -113,6 +113,7 @@ foreach ($pref_list as $pref) {
 
       }
     }
+    // 2ページ目以降 //////////////////////////////////////
   } // 業種ループ
 }
 exit;

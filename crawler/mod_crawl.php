@@ -151,8 +151,8 @@ function getTargetWork(){
 
 /**
  * ハローワークの項目とサイト項目の置き換え
- * @param  [type] $value [description]
- * @return [type]        [description]
+ * @param  String $value ハローワーク項目名
+ * @return String $field サイト内項目名(DB)
  */
 function getField($value){
   $field = "";
