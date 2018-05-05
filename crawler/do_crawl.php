@@ -1,7 +1,7 @@
 <?php
 // error_reporting(0);
 require_once(__DIR__ . "/mod_crawl.php");
-require_once(__DIR__ . "/common.php");
+require_once(__DIR__ . "/../lib/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
 set_time_limit(0);
 getCookie(); // サイト内のCOOKIEを取得

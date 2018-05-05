@@ -1,5 +1,5 @@
 <?php
-require_once(__DIR__ . "/common.php");
+require_once(__DIR__ . "/../lib/common.php");
 $_BASE_URL = "https://www.hellowork.go.jp/servicef/";
 $_SEARCH_URL = "130050.do";
 $_REF_URL = "https://www.hellowork.go.jp/servicef/130020.do?action=initDisp&screenId=130020";
