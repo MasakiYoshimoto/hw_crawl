@@ -5,19 +5,19 @@ body{
 }
 table {
   width: 100%;
-	border-collapse: collapse;	/* 隣接するセルの罫線を重ねて表示する */
+	border-collapse: collapse;
 }
 table th{
-	padding: 6px;			/* 見出しの余白を指定する(上下左右) */
-	background-color: rgba(170,170,170, 0.3);	/* 見出しの背景色を指定する */
-	color: #326693;			/* フォントの色を指定する */
-	font-weight: normal;	/* フォントの太さを指定する */
-	text-align: center;		/* テキストの位置を指定する */
-	vertical-align: top;	/* 見出しテキストの位置を指定する */
-	border: 1px solid #666666;/* 罫線を実線で指定する */
+	padding: 6px;
+	background-color: rgba(170,170,170, 0.3);
+	color: #326693;
+	font-weight: normal;
+	text-align: center;
+	vertical-align: top;
+	border: 1px solid #666666;
 }
 table td{
-	padding: 6px;				/* セルの余白を指定する(上下左右) */
-	background-color: #fff;		/* ボックスの背景色を指定する */
-	border: 1px solid #666666;	/* 罫線を実線で指定する */
+	padding: 6px;
+	background-color: #fff;
+	border: 1px solid #666666;
 }
