@@ -31,7 +31,7 @@ foreach ($pref_list as $pref) {
     $url = $_BASE_URL . $_SEARCH_URL;
 
     $html = getHtml($url, $search_data, $_REF_URL);
-
+var_dump($html);exit();
     $doc = phpQuery::newDocument($html);
     $all_cnt_str = $doc[".txt90-right"]->text();
     $all_cnt_str = str_replace( "\xc2\xa0", " ", $all_cnt_str );
@@ -47,13 +47,33 @@ foreach ($pref_list as $pref) {
       $detail_html = getHtml($detail_url, $data, $_REF_URL);
       $detail_doc = phpQuery::newDocument($detail_html);
 
+      //詳細ページ内の項目ごとにデータを抽出
       $item_arr = array();
       $is_table0 = getField($detail_doc["table:eq(0) tr"][0]);
       $is_table1 = getField($detail_doc["table:eq(1) tr"][0]);
-var_dump($is_table0);
+
+      if(!empty($is_table0)){
+        foreach ($detail_doc["table:eq(0) tr"] as $key => $detail_tr) {
+          $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
+          $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+
+          if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
+            $item_arr[$key]["name"]="賃金形態";
+          }
+        }
+      } elseif(!empty($is_table1)){
+        foreach ($detail_doc["table:eq(1) tr"] as $key => $detail_tr) {
+          $item_arr[$key]["name"] = pq($detail_tr)->find("th:eq(0)")->text();
+          $item_arr[$key]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+
+          if(strpos($item_arr[$key]["name"],"賃金賃金形態")!==false){
+            $item_arr[$key]["name"]="賃金形態";
+          }
+        }
+      }
       exit();
     }
-exit();
+
     // 2ページ目以降
     for ($i=2; $i <= $all_page_cnt; $i++) {
       $search_data["nowPageNumberHidden"] = $i;
