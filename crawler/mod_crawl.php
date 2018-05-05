@@ -17,15 +17,13 @@ $_SERCH_DATA = array(
   "kiboShokushu1" => "",
   "kiboShokushu2" => "",
   "kiboShokushu3" => "",
-  "kiboShokushu1Hidden" => "",
-  "kiboShokushu2Hidden" => "",
-  "kiboShokushu3Hidden" => "",
   "nenrei" => "",
   "license1" => "",
   "license2" => "",
   "license3" => "",
   "gekkyuKagen" => "",
   "teate" => "1",
+  "koyoKeitai" => "1",
   "shukyuFutsuka" => "0",
   "nenkanKyujitsu" => "",
   "rdoJkgi" => "9",
@@ -37,13 +35,17 @@ $_SERCH_DATA = array(
   "freeWord" => "現場管理 監理 監督 技術 設計 施工図 プラント",
   "freeWordRuigigo" => "1",
   "notFreeWord" => "厨房",
-  "commonSearch" => "検索",
   "fwListNowPage" => "1",
   "fwListLeftPage" => "1",
   "fwListNaviCount" => "11",
   "kyujinShuruiHidden" => "1",
   "todofukenHidden" => "",
+  "kyushokuUmuHidden" => "2",
+  "kiboShokushu1Hidden" => "",
   "teateHidden" => "1",
+  "koyoKeitaiHidden" => "1",
+  "shukyuFutsukaHidden" => "0",
+  "rdoJkgiHidden" => "9",
   "freeWordHidden" => "現場管理 監理 監督 技術 設計 施工図 プラント",
   "freeWordRuigigoHidden" => "1",
   "freeWordTypeHidden" => "0",
@@ -60,6 +62,32 @@ $_SERCH_DATA = array(
   "codeAssistDivide" => "",
   "codeAssistRankLimit" => "",
   "xab_vrbs" => "commonNextScreen,detailJokenChangeButton,commonDetailInfo,commonSearch,commonDelete"
+);
+
+$cate_pref = array(
+  '11' => 'A','12' => 'A',
+  '13' => 'A','14' => 'A',
+  '26' => 'B','27' => 'B',
+  '28' => 'B','29' => 'B'
+);
+
+$cate_work = array(
+  '09' => 'B','70' => 'J1',
+  '71' => 'J2','72' => 'J3',
+  '73' => 'J4'
+);
+
+$count_code_percent = array(
+  "A-B" => 0.40,
+  "A-J1" => 0.03,
+  "A-J2" => 0.03,
+  "A-J3" => 0.03,
+  "A-J4" => 0.03,
+  "C-B" => 0.40,
+  "C-J1" => 0.03,
+  "C-J2" => 0.03,
+  "C-J3" => 0.03,
+  "C-J4" => 0.03,
 );
 
 /**
@@ -86,7 +114,6 @@ function getCookie(){
  * @return Object $html 取得ページ
  */
 function getHtml($url, $data, $ref){
-  ini_set('safe_mode', false);
 
   $curl = curl_init();
   curl_setopt($curl,CURLOPT_URL,$url);
@@ -172,7 +199,7 @@ function getField($value){
 
 
 function chkExistData($ads_info){
-  if(empty($ads_info['code']['value']) || $ads_info['emp_status']['value']!="正社員") return false;
+  if(empty($ads_info['code']['value'])) return false;
   $con = connect_db();//Db接続
   $sql = "SELECT count(id) cnt FROM job_ads WHERE code='{$ads_info['code']['value']}'";
   $sql_res = $con->query($sql);
@@ -189,7 +216,7 @@ function insAdsRecode($ads_info){
   $con = connect_db();//Db接続
   $sql_strings = makeSqlStringsByArray($ads_info, "insert");
   $sql = "INSERT INTO job_ads ({$sql_strings['fields']}) VALUES ({$sql_strings['values']})";
-  // $con->query($sql);
+  $con->query($sql);
 }
 
 function makeSqlStringsByArray($array, $sql_type){
@@ -206,5 +233,13 @@ function makeSqlStringsByArray($array, $sql_type){
       break;
   }
   return $sql_strings;
+}
+
+function getLoopCount($max_count){
+  global $count_code_percent;
+  foreach ($count_code_percent as $key => $value) {
+    $loop_cnt_arr[$key] = $max_count*$value;
+  }
+  return $loop_cnt_arr;
 }
 ?>

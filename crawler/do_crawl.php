@@ -1,10 +1,3 @@
-<!DOCTYPE html>
-<html>
-  <head>
-    <meta charset="utf-8">
-    <title></title>
-  </head>
-  <body>
 <?php
 // error_reporting(0);
 require_once(__DIR__ . "/mod_crawl.php");
@@ -12,26 +5,27 @@ require_once(__DIR__ . "/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
 set_time_limit(3600);
 getCookie(); // サイト内のCOOKIEを取得
-$count = 0;
-
+$max_count = 10000; // 取得最大件数
 $search_data = $_SERCH_DATA;
+
+$loop_cnt_arr = getLoopCount($max_count);
 
 $pref_list = getTargetPref(); //対象都道府県取得
 $work_list = getTargetWork(); //対象職種取得
 
-// データベースと接続
-// $con = connect_db();
 foreach ($pref_list as $pref) { // 都道府県ループ
   $search_data["todofukenHidden"] = $pref["pref_code"];
 
   foreach ($work_list as $work) { // 業種ループ
     $search_data["kiboShokushu1Hidden"] = $work["work_code"];
     $search_data["kiboShokushu1"] = $work["work_code"];
+    $search_data["commonSearch"] = "検索";
+    $count = 0;
+    $count_code = $cate_pref[$pref["pref_code"]]."-".$cate_work[$work["work_code"]];
 
     $url = $_BASE_URL . $_SEARCH_URL;
 
     $html = getHtml($url, $search_data, $_REF_URL);
-var_dump($html);
     $doc = phpQuery::newDocument($html);
     $all_cnt_str = $doc[".txt90-right"]->text();
     $all_cnt_str = str_replace( "\xc2\xa0", " ", $all_cnt_str );
@@ -53,7 +47,6 @@ var_dump($html);
       $is_table1 = $detail_doc["table:eq(1) tr"][0];
 
       if(!empty($is_table0)){
-        $arr_cnt = 0;
         foreach ($detail_doc["table:eq(0) tr"] as $detail_tr) {
           $base_field = pq($detail_tr)->find("th:eq(0)")->text();
           if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
@@ -61,17 +54,14 @@ var_dump($html);
           if(!empty($field)){
             $item_arr[$field]["name"] = $base_field;
             $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-            $arr_cnt++;
             if(strpos($base_field, "職種")!==false){
               $field = "occupation";
               $item_arr[$field]["name"] = $base_field;
               $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-              $arr_cnt++;
             }
           }
         }
       } elseif(!empty($is_table1)){
-        $arr_cnt = 0;
         foreach ($detail_doc["table:eq(1) tr"] as $detail_tr) {
           $base_field = pq($detail_tr)->find("th:eq(0)")->text();
           if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
@@ -79,28 +69,33 @@ var_dump($html);
           if(!empty($field)){
             $item_arr[$field]["name"] = $base_field;
             $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-            $arr_cnt++;
             if(strpos($base_field, "職種")!==false){
               $field = "occupation";
               $item_arr[$field]["name"] = $base_field;
               $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-              $arr_cnt++;
             }
           }
         }
       }
       //データが存在しなければ登録処理
-      if(chkExistData($item_arr)) insAdsRecode($item_arr);
+      if(chkExistData($item_arr)){
+        insAdsRecode($item_arr);
+        $count++;
+        if($count == $loop_cnt_arr[$count_code]) break;
+      }
     }
     // 1ページ目 //////////////////////////////////////////
-exit();
+
     // 2ページ目以降 //////////////////////////////////////
-    for ($i=2; $i <= 3; $i++) {
-      $search_data["nowPageNumberHidden"] = $i;
-      $html = getHtml($url, $search_data, $_REF_URL);
-var_dump($html);
+    for ($i=2; $i <= $all_page_cnt; $i++) {
+      unset($search_data["commonSearch"]);
+      if(!empty($j))unset($search_data["fwListNaviBtn".$j]);
+      $j = $i;
+      $search_data["fwListNaviBtn".$i] = (String)$i;
+      $html = getHtml($url, $search_data, $url);
+
       $doc = phpQuery::newDocument($html);
-exit();
+
       foreach ($doc[".sole-small #ID_link"] as $value) {
         $data = array();
         $detail_uri = pq($value)->attr("href");
@@ -114,7 +109,6 @@ exit();
         $is_table1 = $detail_doc["table:eq(1) tr"][0];
 
         if(!empty($is_table0)){
-          $arr_cnt = 0;
           foreach ($detail_doc["table:eq(0) tr"] as $detail_tr) {
             $base_field = pq($detail_tr)->find("th:eq(0)")->text();
             if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
@@ -122,17 +116,14 @@ exit();
             if(!empty($field)){
               $item_arr[$field]["name"] = $base_field;
               $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-              $arr_cnt++;
               if(strpos($base_field, "職種")!==false){
                 $field = "occupation";
                 $item_arr[$field]["name"] = $base_field;
                 $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-                $arr_cnt++;
               }
             }
           }
         } elseif(!empty($is_table1)){
-          $arr_cnt = 0;
           foreach ($detail_doc["table:eq(1) tr"] as $detail_tr) {
             $base_field = pq($detail_tr)->find("th:eq(0)")->text();
             if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
@@ -140,26 +131,25 @@ exit();
             if(!empty($field)){
               $item_arr[$field]["name"] = $base_field;
               $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-              $arr_cnt++;
               if(strpos($base_field, "職種")!==false){
                 $field = "occupation";
                 $item_arr[$field]["name"] = $base_field;
                 $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
-                $arr_cnt++;
               }
             }
           }
         }
 
         //データが存在しなければ登録処理
-        if(chkExistData($item_arr)) insAdsRecode($item_arr);
+        if(chkExistData($item_arr)){
+          insAdsRecode($item_arr);
+          $count++;
+          if($count == $loop_cnt_arr[$count_code]) break;
+        }
 
       }
     }
     // 2ページ目以降 //////////////////////////////////////
   } // 業種ループ
 } // 都道府県ループ
-exit;
 ?>
-</body>
-</html>
