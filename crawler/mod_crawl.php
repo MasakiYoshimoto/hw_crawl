@@ -115,12 +115,9 @@ function getHtml($url, $data, $ref){
  */
 function getTargetPref(){
   $target_pref = array();
-
-  // データベースと接続
-  $con = connect_db();
+  $con = connect_db();//Db接続
 
   $sql = "SELECT `pref_code`,`pref` FROM mst_target_pref WHERE target_flg=1";
-
   $result = $con->query($sql);
   while($row = $result->fetch_assoc()){
     $target_pref[] = $row;
@@ -135,8 +132,7 @@ function getTargetPref(){
  */
 function getTargetWork(){
   $target_work = array();
-
-  $con = connect_db();
+  $con = connect_db();//Db接続
 
   $sql = "SELECT `work_code`,`work` FROM mst_target_work WHERE target_flg=1";
   $result = $con->query($sql);
@@ -172,5 +168,43 @@ function getField($value){
   endif;
 
   return $field;
+}
+
+
+function chkExistData($ads_info){
+  if(empty($ads_info['code']['value']) || $ads_info['emp_status']['value']=="正社員以外") return false;
+  $con = connect_db();//Db接続
+  $sql = "SELECT count(id) cnt FROM job_ads WHERE code='{$ads_info['code']['value']}'";
+  $sql_res = $con->query($sql);
+  $res = $sql_res->fetch_assoc();
+
+  if($res["cnt"]>0){
+    return false;
+  } else {
+    return true;
+  }
+}
+
+function insAdsRecode($ads_info){
+  $con = connect_db();//Db接続
+  $sql_strings = makeSqlStringsByArray($ads_info, "insert");
+  $sql = "INSERT INTO job_ads ({$sql_strings['fields']}) VALUES ({$sql_strings['values']})";
+  $con->query($sql);
+}
+
+function makeSqlStringsByArray($array, $sql_type){
+  $sql_strings = array("fields" => "", "values" => "");
+
+  switch ($sql_type) {
+    case 'insert':
+      foreach ($array as $key => $data) {
+        if(!empty($sql_strings["fields"])) $sql_strings["fields"] .= ",";
+        if(!empty($sql_strings["values"])) $sql_strings["values"] .= ",";
+        $sql_strings["fields"] .= "`".$key."`";
+        $sql_strings["values"] .= "'".$data["value"]."'";
+      }
+      break;
+  }
+  return $sql_strings;
 }
 ?>

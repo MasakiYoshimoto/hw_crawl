@@ -14,14 +14,14 @@ set_time_limit(3600);
 getCookie(); // サイト内のCOOKIEを取得
 $count = 0;
 
-$pref_list = getTargetPref();
-$work_list = getTargetWork();
+$pref_list = getTargetPref(); //対象都道府県取得
+$work_list = getTargetWork(); //対象職種取得
 
 $search_data = $_SERCH_DATA;
 
 // データベースと接続
 // $con = connect_db();
-foreach ($pref_list as $pref) {
+foreach ($pref_list as $pref) { // 都道府県ループ
   $search_data["todofukenHidden"] = $pref["pref_code"];
 
   foreach ($work_list as $work) { // 業種ループ
@@ -59,14 +59,13 @@ foreach ($pref_list as $pref) {
           if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
           $field = getField($base_field);
           if(!empty($field)){
-            $item_arr[$arr_cnt]["field"] = $field;
-            $item_arr[$arr_cnt]["name"] = $base_field;
-            $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+            $item_arr[$field]["name"] = $base_field;
+            $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
             $arr_cnt++;
             if(strpos($base_field, "職種")!==false){
-              $item_arr[$arr_cnt]["field"] = "occupation";
-              $item_arr[$arr_cnt]["name"] = $base_field;
-              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $field = "occupation";
+              $item_arr[$field]["name"] = $base_field;
+              $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
               $arr_cnt++;
             }
           }
@@ -78,37 +77,34 @@ foreach ($pref_list as $pref) {
           if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
           $field = getField($base_field);
           if(!empty($field)){
-            $item_arr[$arr_cnt]["field"] = $field;
-            $item_arr[$arr_cnt]["name"] = $base_field;
-            $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+            $item_arr[$field]["name"] = $base_field;
+            $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
             $arr_cnt++;
             if(strpos($base_field, "職種")!==false){
-              $item_arr[$arr_cnt]["field"] = "occupation";
-              $item_arr[$arr_cnt]["name"] = $base_field;
-              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $field = "occupation";
+              $item_arr[$field]["name"] = $base_field;
+              $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
               $arr_cnt++;
             }
           }
         }
       }
-
-      echo "<br>";
-      var_dump($item_arr);
-      echo "<br>";
+      //データが存在しなければ登録処理
+      if(chkExistData($item_arr)) insAdsRecode($item_arr);
     }
-    exit();
     // 1ページ目 //////////////////////////////////////////
+
     // 2ページ目以降 //////////////////////////////////////
-    for ($i=2; $i <= $all_page_cnt; $i++) {
+    for ($i=2; $i <= 3; $i++) {
       $search_data["nowPageNumberHidden"] = $i;
       $html = getHtml($url, $search_data, $_REF_URL);
       $doc = phpQuery::newDocument($html);
 
       foreach ($doc[".sole-small #ID_link"] as $value) {
         $data = array();
-        $detail_url = pq($value)->attr("href");
-        $detail_url = str_replace("./", "", $detail_url);
-        $detail_url = $_BASE_URL.$detail_url;
+        $detail_uri = pq($value)->attr("href");
+        $detail_uri = str_replace("./", "", $detail_uri);
+        $detail_url = $_BASE_URL.$detail_uri;
         $detail_html = getHtml($detail_url, $data, $_REF_URL);
         $detail_doc = phpQuery::newDocument($detail_html);
 
@@ -123,14 +119,13 @@ foreach ($pref_list as $pref) {
             if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
             $field = getField($base_field);
             if(!empty($field)){
-              $item_arr[$arr_cnt]["field"] = $field;
-              $item_arr[$arr_cnt]["name"] = $base_field;
-              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $item_arr[$field]["name"] = $base_field;
+              $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
               $arr_cnt++;
               if(strpos($base_field, "職種")!==false){
-                $item_arr[$arr_cnt]["field"] = "occupation";
-                $item_arr[$arr_cnt]["name"] = $base_field;
-                $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+                $field = "occupation";
+                $item_arr[$field]["name"] = $base_field;
+                $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
                 $arr_cnt++;
               }
             }
@@ -142,19 +137,21 @@ foreach ($pref_list as $pref) {
             if(strpos($base_field,"賃金賃金形態")!==false) $base_field = "賃金形態";
             $field = getField($base_field);
             if(!empty($field)){
-              $item_arr[$arr_cnt]["field"] = $field;
-              $item_arr[$arr_cnt]["name"] = $base_field;
-              $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+              $item_arr[$field]["name"] = $base_field;
+              $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
               $arr_cnt++;
               if(strpos($base_field, "職種")!==false){
-                $item_arr[$arr_cnt]["field"] = "occupation";
-                $item_arr[$arr_cnt]["name"] = $base_field;
-                $item_arr[$arr_cnt]["value"] = pq($detail_tr)->find("td:eq(0)")->text();
+                $field = "occupation";
+                $item_arr[$field]["name"] = $base_field;
+                $item_arr[$field]["value"] = trim(pq($detail_tr)->find("td:eq(0)")->text());
                 $arr_cnt++;
               }
             }
           }
         }
+
+        //データが存在しなければ登録処理
+        if(chkExistData($item_arr)) insAdsRecode($item_arr);
 
       }
     }
