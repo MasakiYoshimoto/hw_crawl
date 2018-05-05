@@ -105,6 +105,7 @@ function getHtml($url, $data, $ref){
   return $html;
 }
 
+
 /**
  * 対象都道府県取得
  * @return Array 都道府県情報
@@ -124,24 +125,49 @@ function getTargetPref(){
   return $target_pref;
 }
 
+
 /**
  * 対象職種取得
- * @return Array 都道府県情報
+ * @return Array 職種情報
  */
 function getTargetWork(){
   $target_work = array();
 
-  // データベースと接続
   $con = connect_db();
 
   $sql = "SELECT `work_code`,`work` FROM mst_target_work WHERE target_flg=1";
-
   $result = $con->query($sql);
+
   while($row = $result->fetch_assoc()){
+    $row['work_code'] = sprintf("%02d", $row['work_code']);
     $target_work[] = $row;
   }
-  var_dump($target_work);exit();
+
   return $target_work;
 }
 
+/**
+ * ハローワークの項目とサイト項目の置き換え
+ * @param  [type] $value [description]
+ * @return [type]        [description]
+ */
+function getField($value){
+  $field = "";
+  if(strpos($value, "求人番号")!==false): $field = "code";
+  elseif(strpos($value, "職種")!==false): $field = "title";
+  elseif(strpos($value, "仕事の内容")!==false): $field = "detail_info";
+  elseif(strpos($value, "就業場所")!==false): $field = "address";
+  elseif(strpos($value, "職種")!==false): $field = "occupation";
+  elseif(strpos($value, "雇用形態")!==false): $field = "emp_status";
+  elseif(strpos($value, "賃金形態")!==false): $field = "salary";
+  elseif(strpos($value, "必要な免許・資格")!==false): $field = "certificate";
+  elseif(strpos($value, "加入保険等")!==false): $field = "benefit";
+  elseif(strpos($value, "通勤手当")!==false): $field = "compensation";
+  elseif(strpos($value, "就業時間")!==false): $field = "working_hour";
+  elseif(strpos($value, "週休二日")!==false): $field = "holiday";
+  elseif(strpos($value, "産業")!==false): $field = "industry";
+  endif;
+
+  return $field;
+}
 ?>
