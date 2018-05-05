@@ -34,15 +34,15 @@ $_SERCH_DATA = array(
   "shugyoJikanShuryoHH" => "",
   "shugyoJikanShuryoMM" => "",
   "freeWordType" => "0",
-  "freeWord" => "",
+  "freeWord" => "現場管理 監理 監督 技術 設計 施工図 プラント",
   "freeWordRuigigo" => "1",
-  "notFreeWord" => "",
+  "notFreeWord" => "厨房",
   "commonSearch" => "検索",
   "fwListNowPage" => "1",
   "fwListLeftPage" => "1",
   "fwListNaviCount" => "11",
-  "kyujinShuruiHidden" => "1", // 雇用形態(正社員固定)
-  "todofukenHidden" => "", //都道府県
+  "kyujinShuruiHidden" => "1",
+  "todofukenHidden" => "",
   "teateHidden" => "1",
   "freeWordHidden" => "現場管理 監理 監督 技術 設計 施工図 プラント",
   "freeWordRuigigoHidden" => "1",
@@ -172,7 +172,7 @@ function getField($value){
 
 
 function chkExistData($ads_info){
-  if(empty($ads_info['code']['value']) || $ads_info['emp_status']['value']=="正社員以外") return false;
+  if(empty($ads_info['code']['value']) || $ads_info['emp_status']['value']!="正社員") return false;
   $con = connect_db();//Db接続
   $sql = "SELECT count(id) cnt FROM job_ads WHERE code='{$ads_info['code']['value']}'";
   $sql_res = $con->query($sql);
@@ -189,7 +189,7 @@ function insAdsRecode($ads_info){
   $con = connect_db();//Db接続
   $sql_strings = makeSqlStringsByArray($ads_info, "insert");
   $sql = "INSERT INTO job_ads ({$sql_strings['fields']}) VALUES ({$sql_strings['values']})";
-  $con->query($sql);
+  // $con->query($sql);
 }
 
 function makeSqlStringsByArray($array, $sql_type){

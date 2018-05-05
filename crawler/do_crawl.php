@@ -6,7 +6,7 @@
   </head>
   <body>
 <?php
-error_reporting(0);
+// error_reporting(0);
 require_once(__DIR__ . "/mod_crawl.php");
 require_once(__DIR__ . "/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
@@ -14,10 +14,10 @@ set_time_limit(3600);
 getCookie(); // サイト内のCOOKIEを取得
 $count = 0;
 
+$search_data = $_SERCH_DATA;
+
 $pref_list = getTargetPref(); //対象都道府県取得
 $work_list = getTargetWork(); //対象職種取得
-
-$search_data = $_SERCH_DATA;
 
 // データベースと接続
 // $con = connect_db();
@@ -31,7 +31,7 @@ foreach ($pref_list as $pref) { // 都道府県ループ
     $url = $_BASE_URL . $_SEARCH_URL;
 
     $html = getHtml($url, $search_data, $_REF_URL);
-
+var_dump($html);
     $doc = phpQuery::newDocument($html);
     $all_cnt_str = $doc[".txt90-right"]->text();
     $all_cnt_str = str_replace( "\xc2\xa0", " ", $all_cnt_str );
@@ -93,13 +93,14 @@ foreach ($pref_list as $pref) { // 都道府県ループ
       if(chkExistData($item_arr)) insAdsRecode($item_arr);
     }
     // 1ページ目 //////////////////////////////////////////
-
+exit();
     // 2ページ目以降 //////////////////////////////////////
     for ($i=2; $i <= 3; $i++) {
       $search_data["nowPageNumberHidden"] = $i;
       $html = getHtml($url, $search_data, $_REF_URL);
+var_dump($html);
       $doc = phpQuery::newDocument($html);
-
+exit();
       foreach ($doc[".sole-small #ID_link"] as $value) {
         $data = array();
         $detail_uri = pq($value)->attr("href");
@@ -157,7 +158,7 @@ foreach ($pref_list as $pref) { // 都道府県ループ
     }
     // 2ページ目以降 //////////////////////////////////////
   } // 業種ループ
-}
+} // 都道府県ループ
 exit;
 ?>
 </body>
