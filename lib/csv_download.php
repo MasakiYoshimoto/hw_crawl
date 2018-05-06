@@ -1,10 +1,16 @@
 <?php
 require_once(__DIR__ . "/common.php");
-
+$error_msg ="";
 if(empty($_POST['chk_download'])){
   $error = true;
   $error_msg = "取得するデータを選択してください。";
 }else{
+  $db = connect_db();
+  $target_date = "";
+  foreach ($_POST['chk_download'] as $date) {
+    if(!empty($target_date)) $target_date .= ",";
+    $target_date .= "'".date("Y-m-d", strtotime($date))."'";
+  }
   $sql = "SELECT
             `code`,`title`,`detail_info`,`address`,
             `occupation`,`emp_status`,`salary`,`certificate`,
@@ -13,16 +19,26 @@ if(empty($_POST['chk_download'])){
           FROM
             `job_ads`
           WHERE
-            update_at=";
+            DATE_FORMAT(update_at,'%Y-%m-%d') IN ({$target_date})
+          ORDER BY update_at DESC";
+  $res = $db->query($sql);
 
+  $dataList = array(
+    0 => array(
+      "管理番号","仕事タイトル","ポイント","お仕事詳細","勤務地","職種","雇用形態",
+      "給与","経験・資格","福利厚生","手当","勤務時間","休日","事業内容")
+  );
 
-  // sampleCsv();
+  while ($row = $res->fetch_assoc()) {
+    array_splice($row,2,0,"");
+    $dataList[] = $row;
+  }
+
+  sampleCsv($dataList);
+  exit();
 }
 
-
-
-
-function sampleCsv() {
+function sampleCsv($dataList) {
 
 	try {
 
@@ -32,12 +48,6 @@ function sampleCsv() {
 		if ($res === FALSE) {
 			throw new Exception('ファイルの書き込みに失敗しました。');
 		}
-
-		// データ一覧。この部分を引数とか動的に渡すようにしましょう
-		$dataList = array(
-			array('hogehoge','mogemoge','mokomoko','aaa'),
-			array('ddd','sss','eeeeee','ffff'),
-		);
 
 		// ループしながら出力
 		foreach($dataList as $dataInfo) {
