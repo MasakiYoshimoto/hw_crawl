@@ -47,7 +47,6 @@ if(empty($_POST['chk_download'])){
   //CSVデータ出力
   sampleCsv($dataList);
 
-  header("location: /");
   exit();
 }
 
