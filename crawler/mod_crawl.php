@@ -218,10 +218,10 @@ function chkExistData($ads_info){
  * レコード追加用関数
  * @param  Array   $ads_info 求人情報(１件)
  */
-function insAdsRecode($ads_info){
+function insAdsRecode($ads_info,$pref_code,$work_code,$count_code){
   $con = connect_db();//Db接続
   $sql_strings = makeSqlStringsByArray($ads_info, "insert");
-  $sql = "INSERT INTO job_ads ({$sql_strings['fields']}) VALUES ({$sql_strings['values']})";
+  $sql = "INSERT INTO job_ads ({$sql_strings['fields']},`pref_code`,`work_code`,`count_code`) VALUES ({$sql_strings['values']},'{$pref_code}','{$work_code}','{$count_code}')";
   $con->query($sql);
 }
 
@@ -252,11 +252,30 @@ function makeSqlStringsByArray($array, $sql_type){
  * @param  Integer $max_count    全体最大件数
  * @return Array   $loop_cnt_arr カテゴリごとの取得数配列
  */
-function getLoopCount($max_count){
+function getLoopCount($max_count,$start_count){
   global $count_code_percent;
   foreach ($count_code_percent as $key => $value) {
-    $loop_cnt_arr[$key] = $max_count*$value;
+    $loop_cnt_arr[$key] = ($max_count*$value)-$start_count[$key];
   }
   return $loop_cnt_arr;
+}
+
+/**
+ * 当日の取得件数をカウントコードごとに取得
+ * 複数回実行時用
+ * @return Array $start_count 当日取得件数配列
+ */
+function getStartcount(){
+  $start_count = array();
+  $con = connect_db();//Db接続
+  $sql = "SELECT `count_code`, COUNT(`id`) as count
+          FROM `job_ads`
+          WHERE CURRENT_DATE = DATE_FORMAT(`update_at`,'%Y-%m-%d')
+          GROUP BY `count_code`";
+  $res = $con->query($sql);
+  while ($row = $res->fetch_assoc()) {
+    $start_count[$row['count_code']] = $row['count'];
+  }
+  return $start_count;
 }
 ?>

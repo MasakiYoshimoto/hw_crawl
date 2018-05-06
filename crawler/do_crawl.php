@@ -7,8 +7,8 @@ set_time_limit(0);
 getCookie(); // サイト内のCOOKIEを取得
 $max_count = 10000; // 取得最大件数
 $search_data = $_SERCH_DATA;
-
-$loop_cnt_arr = getLoopCount($max_count);
+$start_count = getStartcount();
+$loop_cnt_arr = getLoopCount($max_count,$start_count);
 
 $pref_list = getTargetPref(); //対象都道府県取得
 $work_list = getTargetWork(); //対象職種取得
@@ -20,8 +20,14 @@ foreach ($pref_list as $pref) { // 都道府県ループ
     $search_data["kiboShokushu1Hidden"] = $work["work_code"];
     $search_data["kiboShokushu1"] = $work["work_code"];
     $search_data["commonSearch"] = "検索";
-    $count = 0;
     $count_code = $cate_pref[$pref["pref_code"]]."-".$cate_work[$work["work_code"]];
+
+    if(empty($count)){
+      $count = 0;
+    } else {
+      if($count == $loop_cnt_arr[$count_code]) continue;
+      $count = 0;
+    }
 
     $url = $_BASE_URL . $_SEARCH_URL;
 
@@ -79,9 +85,9 @@ foreach ($pref_list as $pref) { // 都道府県ループ
       }
       //データが存在しなければ登録処理
       if(chkExistData($item_arr)){
-        insAdsRecode($item_arr);
+        if($count == $loop_cnt_arr[$count_code]) continue;
+        insAdsRecode($item_arr,$pref["pref_code"],$work["work_code"],$count_code);
         $count++;
-        if($count == $loop_cnt_arr[$count_code]) break;
       }
     }
     // 1ページ目 //////////////////////////////////////////
@@ -142,9 +148,9 @@ foreach ($pref_list as $pref) { // 都道府県ループ
 
         //データが存在しなければ登録処理
         if(chkExistData($item_arr)){
-          insAdsRecode($item_arr);
+          if($count == $loop_cnt_arr[$count_code]) continue;
+          insAdsRecode($item_arr,$pref["pref_code"],$work["work_code"],$count_code);
           $count++;
-          if($count == $loop_cnt_arr[$count_code]) break;
         }
 
       }
