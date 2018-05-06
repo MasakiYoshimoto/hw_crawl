@@ -11,12 +11,19 @@ $res = $db->query($sql);
 $all_cnt_res = $res->fetch_assoc();
 $all_cnt = $all_cnt_res["all_cnt"];
 
+// データ取得
+$sql = "SELECT
+          DATE_FORMAT(`update_at`, '%Y/%m/%d') AS date,
+          COUNT(*) AS count
+        FROM job_ads
+        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d');";
+$res = $db->query($sql);
+$ads_list = array();
+while ($row = $res->fetch_assoc()) {
+  $ads_list[] = $row;
+}
 //ページャー情報生成
-$pager_data = pager($current_page, $all_cnt);
-
-//TODO データ取得
-$sql = "SELECT count(id) as all_cnt FROM job_ads";
-
+$pager_data = pager($current_page, $res->num_rows);
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -42,14 +49,14 @@ $sql = "SELECT count(id) as all_cnt FROM job_ads";
             </tr>
           </thead>
           <tbody>
-            <?php foreach ($pager_data as $key => $value) { ?>
+            <?php foreach ($ads_list as $key => $value) { ?>
               <tr>
+                <td><?=$key+1?></td>
+                <td><?=$value["date"]?></td>
+                <td><?=$value["count"]?></td>
+                <td><input type="checkbox" name="chk_download" value="<?=$value["date"]?>"></td>
                 <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
-                <td></td>
+                <td><input type="checkbox" name="chk_delete" value="<?=$value["date"]?>"></td>
               </tr>
             <?php } ?>
           </tbody>
