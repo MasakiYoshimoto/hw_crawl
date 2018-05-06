@@ -6,15 +6,16 @@ $db = connect_db();
 $current_page = (!empty($_GET["page"]))? $_GET["page"] : 1;
 
 // 全体件数取得
-$sql = "SELECT count(id) as all_cnt FROM job_ads";
+$sql = "SELECT count(id) as all_cnt FROM `job_ads` WHERE `del_flg`=0";
 $res = $db->query($sql);
 $all_cnt_res = $res->fetch_assoc();
 $all_cnt = $all_cnt_res["all_cnt"];
 
 // データ表示全体件数取得
 $sql = "SELECT
-          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS date
-        FROM job_ads
+          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS `date`
+        FROM `job_ads`
+        WHERE `del_flg`=0
         GROUP BY DATE_FORMAT(`create_at`, '%Y%m%d')
         ORDER BY DATE_FORMAT(`create_at`, '%Y%m%d') DESC";
 $res = $db->query($sql);
@@ -29,10 +30,11 @@ if($current_page>1){
 }
 // データ取得
 $sql = "SELECT
-          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS date,
-          COUNT(*) AS count,
-          downloaded_flg
-        FROM job_ads
+          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS `date`,
+          COUNT(*) AS `count`,
+          `downloaded_flg`
+        FROM `job_ads`
+        WHERE `del_flg`=0
         GROUP BY DATE_FORMAT(`create_at`, '%Y%m%d')
         ORDER BY DATE_FORMAT(`create_at`, '%Y%m%d') DESC
         LIMIT {$get_limit_start},{$get_limit_end}";

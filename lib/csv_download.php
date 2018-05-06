@@ -46,6 +46,8 @@ if(empty($_POST['chk_download'])){
 
   //CSVデータ出力
   sampleCsv($dataList);
+
+  header("location: /");
   exit();
 }
 
@@ -85,7 +87,7 @@ function sampleCsv($dataList) {
 	} catch(Exception $e) {
 
 		// 例外処理をここに書きます
-		echo $e;
+		$error_msg = $e;
 
 	}
 }
