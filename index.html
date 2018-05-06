@@ -3,7 +3,7 @@ require_once(__DIR__ . "/lib/common.php");
 require_once(__DIR__ . "/lib/pager.php");
 $db = connect_db();
 
-$current_page = (!empty($_GET["page"]))? $_GET["page"] : 0;
+$current_page = (!empty($_GET["page"]))? $_GET["page"] : 1;
 
 // 全体件数取得
 $sql = "SELECT count(id) as all_cnt FROM job_ads";
@@ -11,19 +11,41 @@ $res = $db->query($sql);
 $all_cnt_res = $res->fetch_assoc();
 $all_cnt = $all_cnt_res["all_cnt"];
 
+// データ表示全体件数取得
+$sql = "SELECT
+          DATE_FORMAT(`update_at`, '%Y/%m/%d') AS date
+        FROM job_ads
+        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d')
+        ORDER BY DATE_FORMAT(`update_at`, '%Y%m%d') DESC";
+$res = $db->query($sql);
+$all_list_cnt = $res->num_rows;
+
+//取得制限
+$get_limit_start = 0;
+$get_limit_end = 30;
+if($current_page>1){
+  $get_limit_start = 30*($current_page-1);
+  $get_limit_end = 30*$current_page;
+}
 // データ取得
 $sql = "SELECT
           DATE_FORMAT(`update_at`, '%Y/%m/%d') AS date,
           COUNT(*) AS count
         FROM job_ads
-        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d');";
+        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d')
+        ORDER BY DATE_FORMAT(`update_at`, '%Y%m%d') DESC
+        LIMIT {$get_limit_start},{$get_limit_end}";
 $res = $db->query($sql);
 $ads_list = array();
 while ($row = $res->fetch_assoc()) {
   $ads_list[] = $row;
 }
+
 //ページャー情報生成
-$pager_data = pager($current_page, $res->num_rows);
+$pager_data = pager($current_page, $all_list_cnt);
+
+//リストNo開始変数
+$list_no = $get_limit_start+1;
 ?>
 <!DOCTYPE html>
 <html lang="ja">
@@ -54,16 +76,18 @@ $pager_data = pager($current_page, $res->num_rows);
               <tbody>
                 <?php foreach ($ads_list as $key => $value) { ?>
                   <tr>
-                    <td><?=$key+1?></td>
+                    <td><?=$list_no?></td>
                     <td><?=$value["date"]?></td>
                     <td><?=$value["count"]?></td>
                     <td><input type="checkbox" name="chk_download" value="<?=$value["date"]?>"></td>
                     <td></td>
                     <td><input type="checkbox" name="chk_delete" value="<?=$value["date"]?>"></td>
                   </tr>
+                  <?php $list_no++; ?>
                 <?php } ?>
               </tbody>
             </table>
+            <button type="button" class="btn-delete">削除</button><button type="button" class="btn-download">ダウンロード</button>
           </form>
         </section>
       </div>
