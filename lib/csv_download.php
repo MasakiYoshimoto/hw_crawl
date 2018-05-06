@@ -7,10 +7,13 @@ if(empty($_POST['chk_download'])){
 }else{
   $db = connect_db();
   $target_date = "";
+
+  //フォームからのデータを整形
   foreach ($_POST['chk_download'] as $date) {
     if(!empty($target_date)) $target_date .= ",";
     $target_date .= "'".date("Y-m-d", strtotime($date))."'";
   }
+  //データ取得
   $sql = "SELECT
             `code`,`title`,`detail_info`,`address`,
             `occupation`,`emp_status`,`salary`,`certificate`,
@@ -19,10 +22,17 @@ if(empty($_POST['chk_download'])){
           FROM
             `job_ads`
           WHERE
-            DATE_FORMAT(update_at,'%Y-%m-%d') IN ({$target_date})
-          ORDER BY update_at DESC";
+            DATE_FORMAT(create_at,'%Y-%m-%d') IN ({$target_date})
+          ORDER BY create_at DESC";
   $res = $db->query($sql);
 
+  //取得フラグ更新
+  $update_sql = "UPDATE `job_ads`
+                SET downloaded_flg=1
+                WHERE DATE_FORMAT(create_at,'%Y-%m-%d') IN ({$target_date})";
+  $db->query($update_sql);
+
+  //CSV出力用データ生成
   $dataList = array(
     0 => array(
       "管理番号","仕事タイトル","ポイント","お仕事詳細","勤務地","職種","雇用形態",
@@ -34,6 +44,7 @@ if(empty($_POST['chk_download'])){
     $dataList[] = $row;
   }
 
+  //CSVデータ出力
   sampleCsv($dataList);
   exit();
 }

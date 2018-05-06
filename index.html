@@ -13,10 +13,10 @@ $all_cnt = $all_cnt_res["all_cnt"];
 
 // データ表示全体件数取得
 $sql = "SELECT
-          DATE_FORMAT(`update_at`, '%Y/%m/%d') AS date
+          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS date
         FROM job_ads
-        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d')
-        ORDER BY DATE_FORMAT(`update_at`, '%Y%m%d') DESC";
+        GROUP BY DATE_FORMAT(`create_at`, '%Y%m%d')
+        ORDER BY DATE_FORMAT(`create_at`, '%Y%m%d') DESC";
 $res = $db->query($sql);
 $all_list_cnt = $res->num_rows;
 
@@ -29,11 +29,12 @@ if($current_page>1){
 }
 // データ取得
 $sql = "SELECT
-          DATE_FORMAT(`update_at`, '%Y/%m/%d') AS date,
-          COUNT(*) AS count
+          DATE_FORMAT(`create_at`, '%Y/%m/%d') AS date,
+          COUNT(*) AS count,
+          downloaded_flg
         FROM job_ads
-        GROUP BY DATE_FORMAT(`update_at`, '%Y%m%d')
-        ORDER BY DATE_FORMAT(`update_at`, '%Y%m%d') DESC
+        GROUP BY DATE_FORMAT(`create_at`, '%Y%m%d')
+        ORDER BY DATE_FORMAT(`create_at`, '%Y%m%d') DESC
         LIMIT {$get_limit_start},{$get_limit_end}";
 $res = $db->query($sql);
 $ads_list = array();
@@ -81,14 +82,14 @@ $list_no = $get_limit_start+1;
                     <td><?=$value["date"]?></td>
                     <td><?=$value["count"]?></td>
                     <td><input type="checkbox" name="chk_download[]" value="<?=$value["date"]?>"></td>
-                    <td></td>
+                    <td><?php echo ($value["downloaded_flg"]==1)? "済" : "未";?></td>
                     <td><input type="checkbox" name="chk_delete[]" value="<?=$value["date"]?>"></td>
                   </tr>
                   <?php $list_no++; ?>
                 <?php } ?>
               </tbody>
             </table>
-            <button type="button" class="btn-delete">削除</button><button type="button" class="btn-download">ダウンロード</button>
+            <button type="button" class="submit" data-action="lib/delete_data.php" id="btn-delete">削除</button><button type="button" class="submit" data-action="lib/csv_download.php" id="btn-download">ダウンロード</button>
             <input type="hidden" class="submit_type" name="submit_type" value="">
           </form>
         </section>
