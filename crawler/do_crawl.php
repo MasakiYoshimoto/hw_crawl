@@ -1,11 +1,11 @@
 <?php
-// error_reporting(0);
+error_reporting(0);
 require_once(__DIR__ . "/mod_crawl.php");
 require_once(__DIR__ . "/../lib/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
 set_time_limit(0);
 getCookie(); // サイト内のCOOKIEを取得
-$max_count = 500; // 取得最大件数
+$max_count = 10000; // 取得最大件数
 $search_data = $_SERCH_DATA;
 
 $loop_cnt_arr = getLoopCount($max_count);
