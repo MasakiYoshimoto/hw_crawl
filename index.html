@@ -54,6 +54,7 @@ $list_no = $get_limit_start+1;
     <title>HWクローリングシステム</title>
     <link rel="stylesheet" type="text/css" href="css/pager.css">
     <link rel="stylesheet" type="text/css" href="css/adsList.css">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
   </head>
   <body>
     <article>
@@ -65,8 +66,8 @@ $list_no = $get_limit_start+1;
           総取得件数：<?=$all_cnt?>件
         </div>
         <section class="data-list-table">
-          <form class="" action="index.html" method="post">
-            <button type="button" class="btn-delete">削除</button><button type="button" class="btn-download">ダウンロード</button>
+          <form class="list-table" action="" method="post">
+            <button type="button" class="submit" data-action="lib/delete_data.php" id="btn-delete">削除</button><button type="button" class="submit" data-action="lib/csv_download.php" id="btn-download">ダウンロード</button>
             <table class="adsTable">
               <thead>
                 <tr>
@@ -79,15 +80,16 @@ $list_no = $get_limit_start+1;
                     <td><?=$list_no?></td>
                     <td><?=$value["date"]?></td>
                     <td><?=$value["count"]?></td>
-                    <td><input type="checkbox" name="chk_download" value="<?=$value["date"]?>"></td>
+                    <td><input type="checkbox" name="chk_download[]" value="<?=$value["date"]?>"></td>
                     <td></td>
-                    <td><input type="checkbox" name="chk_delete" value="<?=$value["date"]?>"></td>
+                    <td><input type="checkbox" name="chk_delete[]" value="<?=$value["date"]?>"></td>
                   </tr>
                   <?php $list_no++; ?>
                 <?php } ?>
               </tbody>
             </table>
             <button type="button" class="btn-delete">削除</button><button type="button" class="btn-download">ダウンロード</button>
+            <input type="hidden" class="submit_type" name="submit_type" value="">
           </form>
         </section>
       </div>
@@ -95,5 +97,14 @@ $list_no = $get_limit_start+1;
         <?php include_once(__DIR__ . "/parts/pager.html"); ?>
       </footer>
     </article>
+    <script>
+    $('.submit').on('click',function(){
+      var submit_type = $(this).attr('id');
+      var type = submit_type.split('-');
+      $('.submit_type').val(type[1]);
+      $(this).parents('form').attr('action', $(this).data('action'));
+      $('.list-table').submit();
+    });
+    </script>
   </body>
 </html>
