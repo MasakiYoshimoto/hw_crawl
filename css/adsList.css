@@ -22,3 +22,24 @@ table td{
 	border: 1px solid #666666;
   text-align: center;
 }
+.data-list-table {
+  text-align: right;
+}
+.btn-delete {
+  text-decoration: none;
+  padding: 6px;
+  background: rgba(170,170,170, 0.3);
+  color: #326693;
+  width: 120px;
+  font-size: 16px;
+  border: 1px solid #666666;
+}
+.btn-download {
+  text-decoration: none;
+  padding: 6px;
+  background: rgb(170,170,170, 0.3);
+  color: #326693;
+  width: 120px;
+  font-size: 16px;
+  border: 1px solid #666666;
+}

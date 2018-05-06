@@ -29,7 +29,7 @@ $pager_data = pager($current_page, $res->num_rows);
 <html lang="ja">
   <head>
     <meta charset="utf-8">
-    <title></title>
+    <title>HWクローリングシステム</title>
     <link rel="stylesheet" type="text/css" href="css/pager.css">
     <link rel="stylesheet" type="text/css" href="css/adsList.css">
   </head>
@@ -39,28 +39,31 @@ $pager_data = pager($current_page, $res->num_rows);
         <h1>HWクローリングシステム</h1>
       </header>
       <div class="main-contents">
-        <div class="">
+        <div class="all_cnt">
           総取得件数：<?=$all_cnt?>件
         </div>
-        <table class="adsTable">
-          <thead>
-            <tr>
-              <th>No.</th><th>日付</th><th>取得件数</th><th>ダウンロード</th><th>取得済/未</th><th>削除</th>
-            </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($ads_list as $key => $value) { ?>
+        <section class="data-list-table">
+          <button type="" class="btn-delete">削除</button><button type="" class="btn-download">ダウンロード</button>
+          <table class="adsTable">
+            <thead>
               <tr>
-                <td><?=$key+1?></td>
-                <td><?=$value["date"]?></td>
-                <td><?=$value["count"]?></td>
-                <td><input type="checkbox" name="chk_download" value="<?=$value["date"]?>"></td>
-                <td></td>
-                <td><input type="checkbox" name="chk_delete" value="<?=$value["date"]?>"></td>
+                <th>No.</th><th>日付</th><th>取得件数</th><th>ダウンロード</th><th>取得済/未</th><th>削除</th>
               </tr>
-            <?php } ?>
-          </tbody>
-        </table>
+            </thead>
+            <tbody>
+              <?php foreach ($ads_list as $key => $value) { ?>
+                <tr>
+                  <td><?=$key+1?></td>
+                  <td><?=$value["date"]?></td>
+                  <td><?=$value["count"]?></td>
+                  <td><input type="checkbox" name="chk_download" value="<?=$value["date"]?>"></td>
+                  <td></td>
+                  <td><input type="checkbox" name="chk_delete" value="<?=$value["date"]?>"></td>
+                </tr>
+              <?php } ?>
+            </tbody>
+          </table>
+        </section>
       </div>
       <footer>
         <?php include_once(__DIR__ . "/parts/pager.html"); ?>
