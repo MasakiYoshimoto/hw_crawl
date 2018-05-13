@@ -5,7 +5,7 @@ require_once(__DIR__ . "/../lib/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
 set_time_limit(0);
 getCookie(); // サイト内のCOOKIEを取得
-$max_count = 10000; // 取得最大件数
+$max_count = 500; // 取得最大件数
 $search_data = $_SERCH_DATA;
 $start_count = getStartcount();
 $loop_cnt_arr = getLoopCount($max_count,$start_count);
@@ -13,12 +13,12 @@ $loop_cnt_arr = getLoopCount($max_count,$start_count);
 $pref_list = getTargetPref(); //対象都道府県取得
 $work_list = getTargetWork(); //対象職種取得
 
+foreach ($work_list as $work) { // 業種ループ
+  $search_data["kiboShokushu1Hidden"] = $work["work_code"];
+  $search_data["kiboShokushu1"] = $work["work_code"];
+
 foreach ($pref_list as $pref) { // 都道府県ループ
   $search_data["todofukenHidden"] = $pref["pref_code"];
-
-  foreach ($work_list as $work) { // 業種ループ
-    $search_data["kiboShokushu1Hidden"] = $work["work_code"];
-    $search_data["kiboShokushu1"] = $work["work_code"];
     $search_data["commonSearch"] = "検索";
     $count_code = $cate_pref[$pref["pref_code"]]."-".$cate_work[$work["work_code"]];
 
@@ -155,6 +155,6 @@ foreach ($pref_list as $pref) { // 都道府県ループ
       }
     }
     // 2ページ目以降 //////////////////////////////////////
-  } // 業種ループ
-} // 都道府県ループ
+  } // 都道府県ループ
+} // 業種ループ
 ?>
