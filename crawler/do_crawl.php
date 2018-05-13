@@ -25,8 +25,7 @@ foreach ($pref_list as $pref) { // 都道府県ループ
     if(empty($count)){
       $count = 0;
     } else {
-      if($count == $loop_cnt_arr[$count_code]) continue;
-      $count = 0;
+      if($count == $loop_cnt_arr[$count_code]): $count = 0; continue; endif;
     }
 
     $url = $_BASE_URL . $_SEARCH_URL;
