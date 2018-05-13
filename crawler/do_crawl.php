@@ -1,5 +1,5 @@
 <?php
-error_reporting(0);
+error_reporting(E_ALL);
 require_once(__DIR__ . "/mod_crawl.php");
 require_once(__DIR__ . "/../lib/common.php");
 require_once(__DIR__ . "/../lib/phpQuery-onefile.php");
